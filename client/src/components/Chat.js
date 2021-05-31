@@ -8,6 +8,7 @@ import { store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css'
 import { TextField, Grid, Button, Container } from '@material-ui/core';
 import { Link, useLocation } from 'react-router-dom'
+import { welcome, stopSpamming, messageCannotBeLeftBlank } from './notifications.js'
 
 let socket;
 
@@ -18,11 +19,13 @@ const Chat = () => {
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
     const [allUsers, setAllUsers] = useState(0);
+    const [ableToSendMessage, setAbleToSendMessage] = useState(true);
     const SERVER = "http://localhost:5050";
-    
+
     useEffect(() => {   // do the connection when the user joins the chat.
         socket = io(SERVER);
         socket.emit('join-chat', { username, channel });
+        store.addNotification(welcome);
     }, [SERVER, location.state]);
 
     useEffect(() => {
@@ -40,22 +43,6 @@ const Chat = () => {
             setChatMessages(chatMessages => [...chatMessages, { username, message }]);
         });
 
-        socket.on('welcome-notification', () => {
-            store.addNotification({
-                title: `Welcome ${username}!`,
-                message: "Please behave and enjoy chatting!",
-                type: "info",
-                insert: "top",
-                container: "top-right",
-                animationIn: ["animate__animated", "animate__fadeIn"],
-                animationOut: ["animate__animated", "animate__fadeOut"],
-                dismiss: {
-                    duration: 5000,
-                    onScreen: true
-                }
-            });
-        });
-
         socket.on('totalUsersOnChannel', (usersConnected) => {    // for updating users connected in a channel
             setAllUsers(usersConnected);
         });
@@ -69,8 +56,15 @@ const Chat = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        if (!ableToSendMessage) return store.addNotification(stopSpamming);
+        if (message.replace(/\s/g, '').length === 0) return store.addNotification(messageCannotBeLeftBlank)
+
         socket.emit('chat-message', ({ username, message, channel }));
-        setMessage('')
+        setMessage('');
+        setAbleToSendMessage(false);
+        setTimeout(() => {
+            setAbleToSendMessage(true); // user cannot spam messages.
+        }, 700);
     }
 
     const getCurrentDate = () => {
