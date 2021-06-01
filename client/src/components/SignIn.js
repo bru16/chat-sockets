@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 
 const SignIn = () => {
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState('test');   // delete value
     const [channel, setChannel] = useState('general');
     const history = useHistory();
 
@@ -33,7 +33,7 @@ const SignIn = () => {
                                 <FontAwesomeIcon icon={faUser} />
                             </Grid>
                             <Grid item>
-                                <TextField id="standard-basic" label="Username" onChange={e => setUsername(e.target.value)} />
+                                <TextField id="standard-basic" value={username} label="Username" onChange={e => setUsername(e.target.value)} />
                             </Grid>
                             <Grid item>
                                 <Button type="submit"

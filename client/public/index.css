@@ -17,7 +17,6 @@
     background: linear-gradient(90deg, rgba(238,174,202,1) 0%, rgba(148,193,233,1) 80%, rgba(148,190,230,1) 100%);
     padding: 10px;
     margin: 10px 0;
-    flex-shrink: 0;
   }
   
   .darker {
@@ -29,4 +28,8 @@
     margin-left: auto;
     font-size: small;
     font-style: italic;
+  }
+
+  .wordwrap{
+    word-break: break-word;
   }

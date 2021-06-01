@@ -3,12 +3,13 @@ import { io } from 'socket.io-client'
 import ScrollToBottom from 'react-scroll-to-bottom';
 import Message from './Message/Message'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faArrowLeft, faPaperPlane, faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import { store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css'
-import { TextField, Grid, Button, Container } from '@material-ui/core';
+import { TextField, Grid, Button, Container, Drawer } from '@material-ui/core';
 import { Link, useLocation } from 'react-router-dom'
 import { welcome, stopSpamming, messageCannotBeLeftBlank } from './notifications.js'
+import SideBar from './SideBar'
 
 let socket;
 
@@ -18,7 +19,7 @@ const Chat = () => {
     const [channel] = useState(location.state.channel);
     const [message, setMessage] = useState('');
     const [chatMessages, setChatMessages] = useState([]);
-    const [allUsers, setAllUsers] = useState(0);
+    const [allUsers, setAllUsers] = useState([]);
     const [ableToSendMessage, setAbleToSendMessage] = useState(true);
     const SERVER = "http://localhost:5050";
 
@@ -43,7 +44,7 @@ const Chat = () => {
             setChatMessages(chatMessages => [...chatMessages, { username, message }]);
         });
 
-        socket.on('totalUsersOnChannel', (usersConnected) => {    // for updating users connected in a channel
+        socket.on('allUsersConnected', (usersConnected) => {    // for updating users connected in a channel
             setAllUsers(usersConnected);
         });
 
@@ -57,7 +58,7 @@ const Chat = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!ableToSendMessage) return store.addNotification(stopSpamming);
-        if (message.replace(/\s/g, '').length === 0) return store.addNotification(messageCannotBeLeftBlank)
+        if (message.replace(/\s/g, '').length === 0) return store.addNotification(messageCannotBeLeftBlank);
 
         socket.emit('chat-message', ({ username, message, channel }));
         setMessage('');
@@ -77,14 +78,14 @@ const Chat = () => {
     return (
         <>
             <Container container maxWidth="md">
-                <h1 className='text-center mt-5'>Now Chatting...</h1>
+                <h1 className='text-center mt-5'>{channel} - <FontAwesomeIcon icon={faCommentDots} /> </h1>
                 <ScrollToBottom>
                     <Message username={username} chatMessages={chatMessages} />
                 </ScrollToBottom>
             </Container>
-            <Grid spacing={5} sm={12} container className="mt-5 pt-5">
+            <Grid spacing={5} sm={12} container className="mt-4 pt-5">
                 <Grid item sm={4} container justify="center">
-                    <h4>• Users connected: {allUsers}</h4>
+                    <SideBar allUsers={allUsers} />
                 </Grid>
                 <Grid item container justify="center" sm={4}>
                     <form onSubmit={handleSubmit}>

@@ -9,12 +9,12 @@ const Message = ({ chatMessages, username }) => {
                     username === chatMessage.username ? // if the user is the sender.
                         <div class="container-chat">
                             <strong style={{ marginRight: 5 }}>•You:</strong>
-                            {chatMessage.message}
+                            <div style={{wordBreak: 'break-word'}}>{chatMessage.message}</div>
                             <span class="time-right">{chatMessage.messageDate}</span>
                         </div>
                         : <div class="container-chat darker">
                             <strong style={{ marginRight: 5 }}>{chatMessage.username}:</strong>
-                            {chatMessage.message}
+                            <div>{chatMessage.message}</div>
                             <span class="time-right">{chatMessage.messageDate}</span>
                         </div>
                 )
