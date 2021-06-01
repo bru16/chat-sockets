@@ -19,7 +19,6 @@ io.on('connection', (socket) => {
         socket.join(channel);
         const user = userService.addUser({ id: socket.id, name: username, channel });
         socket.broadcast.to(channel).emit('welcome-message', { username: 'ADMIN', message: `${user.name} has connected` });
-        socket.emit('welcome-notification');  // send notification to only the NEW socket.
         io.to(channel).emit('totalUsersOnChannel', userService.totalUsersConnected[channel]); // for displaying users connected
     });
 
