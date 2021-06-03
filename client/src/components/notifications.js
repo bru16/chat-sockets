@@ -15,7 +15,7 @@ export const stopSpamming = {
 export const welcome = {
     title: `Welcome!`,
     message: "Please behave and enjoy chatting!",
-    type: "info",
+    type: "default",
     insert: "top",
     container: "top-right",
     animationIn: ["animate__animated", "animate__fadeIn"],
@@ -27,9 +27,23 @@ export const welcome = {
 }
 
 export const messageCannotBeLeftBlank = {
-    title: `Try again`,
+    title: 'Try again',
     message: "Please be sure that your message is not left blank",
     type: "warning",
+    insert: "top",
+    container: "top-right",
+    animationIn: ["animate__animated", "animate__fadeIn"],
+    animationOut: ["animate__animated", "animate__fadeOut"],
+    dismiss: {
+        duration: 3000,
+        onScreen: true
+    }
+}
+
+export const userExists = {
+    title: 'Try again',
+    message: "That username already exists! try another one.",
+    type: "danger",
     insert: "top",
     container: "top-right",
     animationIn: ["animate__animated", "animate__fadeIn"],

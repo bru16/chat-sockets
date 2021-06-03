@@ -6,14 +6,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faPaperPlane, faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import { store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css'
-import { TextField, Grid, Button, Container, Drawer } from '@material-ui/core';
+import { TextField, Grid, Button, Container, CircularProgress } from '@material-ui/core';
 import { Link, useLocation } from 'react-router-dom'
-import { welcome, stopSpamming, messageCannotBeLeftBlank } from './notifications.js'
+import { welcome, stopSpamming, messageCannotBeLeftBlank, userExists } from './notifications.js'
 import SideBar from './SideBar'
+import { useHistory } from 'react-router-dom'
 
 let socket;
 
 const Chat = () => {
+    const history = useHistory();
     const location = useLocation();
     const [username] = useState(location.state.username);
     const [channel] = useState(location.state.channel);
@@ -21,12 +23,22 @@ const Chat = () => {
     const [chatMessages, setChatMessages] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [ableToSendMessage, setAbleToSendMessage] = useState(true);
+    const [canChat, setCanChat] = useState(false);
     const SERVER = "http://localhost:5050";
 
     useEffect(() => {   // do the connection when the user joins the chat.
         socket = io(SERVER);
-        socket.emit('join-chat', { username, channel });
-        store.addNotification(welcome);
+        socket.emit('join-chat', { username, channel }, (err) => {
+            if (err) {
+                console.log(err);
+                store.addNotification(userExists);
+                history.push('/');
+            }
+            else {
+                setCanChat(true);
+                store.addNotification(welcome);
+            }
+        });
     }, [SERVER, location.state]);
 
     useEffect(() => {
@@ -75,15 +87,21 @@ const Chat = () => {
             (currentDate.getSeconds() < 10 ? "0" : '') + currentDate.getSeconds();  // date format examples: 8:42:01 - 20:00:00
     }
 
+    if (!canChat) return (
+        <Grid container className="container-height" justify="center" alignContent="center">
+            <CircularProgress />
+        </Grid>
+    )
+
     return (
-        <>
-            <Container container maxWidth="md">
+        <Grid>
+            <Container maxWidth="md">
                 <h1 className='text-center mt-5'>{channel} - <FontAwesomeIcon icon={faCommentDots} /> </h1>
-                <ScrollToBottom>
+                <ScrollToBottom debug={false}>
                     <Message username={username} chatMessages={chatMessages} />
                 </ScrollToBottom>
             </Container>
-            <Grid spacing={5} sm={12} container className="mt-4 pt-5">
+            <Grid container className="mt-4 pt-5">
                 <Grid item sm={4} container justify="center">
                     <SideBar allUsers={allUsers} />
                 </Grid>
@@ -97,7 +115,7 @@ const Chat = () => {
                     <Link className="text-dec" to="/"><Button size="large" color="primary"><FontAwesomeIcon icon={faArrowLeft} />Exit</Button></Link>
                 </Grid>
             </Grid>
-        </>
+        </Grid>
     )
 }
 
