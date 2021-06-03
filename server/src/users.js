@@ -1,29 +1,25 @@
-export const users = [];
-
-export const totalUsersConnected = {    // for each channel im gonna have the quantity of users connected.
-    general: 0,
-    programming: 0,
-    hobbies: 0
+export const users = {
+    general: [],
+    programming: [],            // for each channel im gonna have an array of user objects: {id,name}
+    hobbies: []
 }
 
 export const addUser = ({ id, name, channel }) => {
 
-    totalUsersConnected[channel] += 1;
     name = name.trim();
-    const userExists = users.find(user => user.name === name);
-    if (userExists) return { error: 'User already exists in the chat' };
+    const userExists = users[channel].find(user => user.name === name); // search in the proper channel if a user exists
+    if (userExists) throw new Error('User already exists in the chat');
 
     const user = { id, name };
-    users.push(user);
-    return user;
+    users[channel].push(user);  // push into the proper channel, the new user connected.
+    return { user };
 }
 
 export const removeUser = ({ id, channel }) => {
-    totalUsersConnected[channel] -= 1;
-    const index = users.findIndex(user => user.id === id);
-    if (index !== -1) return users.splice(index, 1)[0]; // returns the deleted user
+    const index = users[channel].findIndex(user => user.id === id);
+    if (index !== -1) return users[channel].splice(index, 1)[0]; // returns the deleted user
 }
 
 export const getUser = (id) => {
-    return users.find(user => user.id === id);
+    return users[channel].find(user => user.id === id);
 }
