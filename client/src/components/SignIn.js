@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 
 const SignIn = () => {
-    const [username, setUsername] = useState('test');   // delete value
+    const [username, setUsername] = useState('');
     const [channel, setChannel] = useState('general');
     const history = useHistory();
 
@@ -60,10 +60,5 @@ const SignIn = () => {
         </Grid>
     )
 }
-
-/* //<Link to={{
-    pathname: "/test",
-    state: username
-} */
 
 export default SignIn

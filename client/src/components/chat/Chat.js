@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { io } from 'socket.io-client'
 import ScrollToBottom from 'react-scroll-to-bottom';
-import Message from './Message/Message'
+import Message from './Message'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faPaperPlane, faCommentDots } from '@fortawesome/free-solid-svg-icons'
 import { store } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css'
 import { TextField, Grid, Button, Container, CircularProgress } from '@material-ui/core';
 import { Link, useLocation } from 'react-router-dom'
-import { welcome, stopSpamming, messageCannotBeLeftBlank, userExists } from './notifications.js'
+import { welcome, stopSpamming, messageCannotBeLeftBlank, userExists } from '../notifications.js'
 import SideBar from './SideBar'
 import { useHistory } from 'react-router-dom'
 
@@ -103,7 +103,7 @@ const Chat = () => {
             </Container>
             <Grid container className="mt-4 pt-5">
                 <Grid item sm={4} container justify="center">
-                    <SideBar allUsers={allUsers} />
+                    <SideBar allUsers={allUsers} username={username} />
                 </Grid>
                 <Grid item container justify="center" sm={4}>
                     <form onSubmit={handleSubmit}>

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { faCommentAlt } from '@fortawesome/free-regular-svg-icons'
 
-const SideBar = ({ allUsers }) => {
+const SideBar = ({ allUsers, username }) => {
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -19,7 +19,7 @@ const SideBar = ({ allUsers }) => {
                     <Divider />
                     {allUsers.map((user) => (
                         <ListItem key={user.id}>
-                            <h6>• {user.name}</h6>
+                            {username === user.name ? <h6>• {user.name} <i style={{ fontSize: 11 }}>(you)</i></h6> : <h6>• {user.name}</h6>}
                             <FontAwesomeIcon style={{ marginLeft: 'auto' }} icon={faCommentAlt} />
                         </ListItem>
                     ))}
